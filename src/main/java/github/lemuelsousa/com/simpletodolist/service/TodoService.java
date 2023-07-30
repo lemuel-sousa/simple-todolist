@@ -4,45 +4,35 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import github.lemuelsousa.com.simpletodolist.entity.Todo;
-import github.lemuelsousa.com.simpletodolist.exceptions.BadRequestException;
-import github.lemuelsousa.com.simpletodolist.repository.TodoRepository;
+import github.lemuelsousa.com.simpletodolist.DTO.TodoDTO;
+import github.lemuelsousa.com.simpletodolist.Util.TodoMapper;
 
 @Service
 public class TodoService {
     
-    private TodoRepository todoRepository;
+    private TodoMapper todoMapper;
 
-    public TodoService(TodoRepository todoRepository){
-        this.todoRepository = todoRepository;
+
+    public TodoService(TodoMapper todoMapper) {
+        this.todoMapper = todoMapper;
     }
 
-
-    public List<Todo> create(Todo todo){
-        todoRepository.save(todo);        
+    public List<TodoDTO> create(TodoDTO todoDTO){
+        todoMapper.create(todoDTO);
         return list();
     }
     
-    public List<Todo> list(){
-        return todoRepository.findAll();
+    public List<TodoDTO> list(){
+        return todoMapper.toListDto();         
     }
 
-    public List<Todo> update(Long id, Todo todo){
-        
-        todoRepository.findById(id).ifPresentOrElse(existingTodo -> {
-            todo.setId(id);
-            todoRepository.save(todo);
-        }, () -> {
-            throw new BadRequestException("Todo %d não existe!".formatted(id));
-        });
-        
-        todoRepository.save(todo);
+    public List<TodoDTO> update(Long id, TodoDTO todoDTO){
+        todoMapper.update(id, todoDTO);
         return list();
     }
 
-
-    public List<Todo> delete(Long id){
-        todoRepository.deleteById(id);
+    public List<TodoDTO> delete(Long id){
+        todoMapper.delete(id);
         return list();
     }
 
