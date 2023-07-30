@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import github.lemuelsousa.com.simpletodolist.entity.Todo;
 import github.lemuelsousa.com.simpletodolist.service.TodoService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/todos")
@@ -26,13 +27,12 @@ public class TodoController {
 
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public List<Todo> create(@RequestBody Todo todo){
+    @ResponseStatus( HttpStatus.CREATED)
+    public List<Todo> create(@RequestBody @Valid Todo todo){
         return todoService.create(todo);
     }
     
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     public List<Todo> getAll(){
         return todoService.list();
     }
