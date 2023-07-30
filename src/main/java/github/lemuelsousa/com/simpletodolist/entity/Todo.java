@@ -1,5 +1,6 @@
 package github.lemuelsousa.com.simpletodolist.entity;
 
+import github.lemuelsousa.com.simpletodolist.DTO.TodoDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,6 +30,13 @@ public class Todo {
         this.description = description;
         this.finished = finished;
         this.priority = priority;
+    }
+
+    public Todo(TodoDTO dto) {
+        this.name = dto.getName();
+        this.description = dto.getDescription();
+        this.finished = dto.isFinished();
+        this.priority = dto.getPriority();
     }
 
     public Long getId() {
