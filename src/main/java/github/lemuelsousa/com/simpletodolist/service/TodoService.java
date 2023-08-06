@@ -12,7 +12,6 @@ public class TodoService {
     
     private TodoMapper todoMapper;
 
-
     public TodoService(TodoMapper todoMapper) {
         this.todoMapper = todoMapper;
     }
