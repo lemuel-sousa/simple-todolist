@@ -1,0 +1,17 @@
+version: '3.8'  
+
+services:
+  database:
+    image: mysql:8.1.0
+    ports:
+      - 3306:3306
+    env_file:
+      - .env
+    networks:
+      - mysql-network
+    volumes:
+      - ./db-data:/var/lib/mysql
+
+networks:
+  mysql-network:
+    driver: bridge
