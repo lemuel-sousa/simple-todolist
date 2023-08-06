@@ -12,3 +12,4 @@ spring:
   jpa:
     hibernate:
       dll-auto: update
+    show-sql: true
