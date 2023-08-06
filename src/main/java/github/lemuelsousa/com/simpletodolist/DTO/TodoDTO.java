@@ -1,11 +1,14 @@
 package github.lemuelsousa.com.simpletodolist.DTO;
 
 import github.lemuelsousa.com.simpletodolist.entity.Todo;
+import jakarta.validation.constraints.NotBlank;
 
 public class TodoDTO {
  
     private Long id;
+    @NotBlank
     private String name;
+    @NotBlank
     private String description;
     private boolean finished;
     private int priority;
