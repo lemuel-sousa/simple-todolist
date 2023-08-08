@@ -3,15 +3,25 @@ version: '3.8'
 services:
   database:
     image: mysql:8.1.0
-    ports:
-      - 3306:3306
+    container_name: mysql-todolist-container
+    expose:
+      - 3306
     env_file:
       - .env
     networks:
-      - mysql-network
+      - todolist-net
     volumes:
       - ./db-data:/var/lib/mysql
 
+  simple-todolist-api:
+    build: ./
+    expose:
+      - 5100
+    ports:
+      - 5100:5100
+    networks:
+      - todolist-net
+
 networks:
-  mysql-network:
+  todolist-net:
     driver: bridge
