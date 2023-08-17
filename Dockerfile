@@ -18,7 +18,7 @@ WORKDIR /app
 
 COPY --from=builder /app/build/libs/simple-todolist*.jar ./
 
-EXPOSE 5100
+EXPOSE 8080
 
 ARG PVERSION=0.0.1-SNAPSHOT
 
