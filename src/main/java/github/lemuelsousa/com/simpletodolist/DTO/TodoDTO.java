@@ -69,7 +69,4 @@ public class TodoDTO {
     public void setPriority(int priority) {
         this.priority = priority;
     }
-
-    
-
 }

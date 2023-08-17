@@ -47,7 +47,4 @@ public class TodoController {
     public List<TodoDTO> delete(@PathVariable("id") Long id){
         return todoService.delete(id);
     }
-
-
-
 }
