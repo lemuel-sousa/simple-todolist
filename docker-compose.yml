@@ -1,23 +1,24 @@
-version: '3'  
+version: '3'
 
 services:
   database:
-    image: mysql:8.1.0
-    container_name: mysql-todolist-container  
+    image: mysql:5.7
+    container_name: mysql_db
     ports:
       - 3306:3306
     env_file:
-      - .env    
-    healthcheck:
-      test: "mysql -uroot -p$MYSQL_ROOT_PASSWORD content -e 'select 1'"
-      interval: 1s
-      retries: 10
+      - .env
+    # healthcheck:
+    #   test: "mysql -u${MYSQL_USERNAME} -p$MYSQL_ROOT_PASSWORD content -e 'select 1'"
+    #   interval: 1s
+    #   retries: 10
     networks:
-      - todolist-net    
+      - todolist-net
     volumes:
       - ./db-data:/var/lib/mysql
-
-  simple-todolist-api:    
+      - ./db-init.sql:/docker-entrypoint-initdb.d/db-init.sql
+  
+  simple-todolist-api:
     build:
       context: .
       dockerfile: Dockerfile

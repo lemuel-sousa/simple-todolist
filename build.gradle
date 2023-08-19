@@ -35,7 +35,7 @@ dependencies {
 
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	
-	runtimeOnly 'com.mysql:mysql-connector-j:8.1.0'
+	runtimeOnly 'com.mysql:mysql-connector-j'
 	runtimeOnly 'com.h2database:h2'
 	
 	testImplementation 'org.springframework:spring-webflux'
