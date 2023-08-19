@@ -12,6 +12,7 @@
 - [Spring Data JPA](https://spring.io/projects/spring-data-jpa)
 - [SpringDoc OpenAPI 3](https://springdoc.org/v2/#spring-webflux-support)
 - [Mysql](https://dev.mysql.com/downloads/)
+- [Docker](https://docs.docker.com/get-started/)
 
 ## Práticas adotadas
 
