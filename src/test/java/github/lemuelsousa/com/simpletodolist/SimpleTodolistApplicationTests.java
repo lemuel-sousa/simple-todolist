@@ -11,7 +11,6 @@ import github.lemuelsousa.com.simpletodolist.DTO.TodoDTO;
 import github.lemuelsousa.com.simpletodolist.entity.Todo;
 
 @SpringBootTest( webEnvironment = WebEnvironment.RANDOM_PORT)
-//@Sql("remove.sql")
 class SimpleTodolistApplicationTests {
 
 	@Autowired
