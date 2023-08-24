@@ -4,12 +4,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import github.lemuelsousa.com.simpletodolist.DTO.TodoDTO;
 import github.lemuelsousa.com.simpletodolist.entity.Todo;
 
+@ActiveProfiles("test")
 @SpringBootTest( webEnvironment = WebEnvironment.RANDOM_PORT)
 class SimpleTodolistApplicationTests {
 
@@ -46,7 +47,6 @@ class SimpleTodolistApplicationTests {
 				new Todo("", "", false, 0))
 			.exchange()
 			.expectStatus().isBadRequest();
-
 	}
 
 
