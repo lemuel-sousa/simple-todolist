@@ -78,7 +78,20 @@ class SimpleTodolistApplicationTests {
 			.jsonPath("$[0].priority").isEqualTo(todoUp.getPriority());
 	}
 
+	@Test
+	void testUpdateTodoFailure(){
+		
+		var nonExistentId = 1L;
 
+		var invalidTodo = new TodoDTO(nonExistentId, "", "", false, 1);
+
+		webTestClient
+			.put()
+			.uri("/todos/" + nonExistentId)
+			.bodyValue(invalidTodo)
+			.exchange()
+			.expectStatus().isBadRequest();
+	}
 	
 
 }
