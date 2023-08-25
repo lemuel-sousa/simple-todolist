@@ -30,6 +30,16 @@ public class TodoDTO {
         this.priority = todo.getPriority();
     }
 
+    
+
+    public TodoDTO(Long id, @NotBlank String name, @NotBlank String description, boolean finished, int priority) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.finished = finished;
+        this.priority = priority;
+    }
+
     public Long getId() {
         return id;
     }
