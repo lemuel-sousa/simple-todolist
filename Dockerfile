@@ -24,6 +24,6 @@ ARG PVERSION=0.0.1-SNAPSHOT
 
 ENV PVERSION=${PVERSION}
 
-ENV SPRING_PROFILES_ACTIVE=development
+ENV SPRING_PROFILES_ACTIVE=dev
 
 CMD [ "sh", "-c", "java -jar simple-todolist-$PVERSION.jar"]
