@@ -93,5 +93,16 @@ class SimpleTodolistApplicationTests {
 			.expectStatus().isBadRequest();
 	}
 	
+	@Test
+	@Sql("/import.sql")
+	void testDeleteTodoSuccess(){
+		
+		webTestClient
+			.delete()
+			.uri("/todos/" + 1)
+			.exchange().expectStatus().isOk();
+	}
+
+	
 
 }
