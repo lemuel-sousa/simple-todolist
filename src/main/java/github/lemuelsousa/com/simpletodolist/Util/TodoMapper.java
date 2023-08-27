@@ -45,7 +45,7 @@ public class TodoMapper {
             todo.setId(id);
             todoRepository.save(todo);
         }, () -> {
-            throw new BadRequestException("Todo %d não existe!".formatted(id));
+            throw new BadRequestException("Task {%d} does not exist!".formatted(id));
         });
     }
 
@@ -54,7 +54,7 @@ public class TodoMapper {
         todoRepository.findById(id).ifPresentOrElse(
             (existingTodo) -> todoRepository.delete(existingTodo),
             () -> {
-                 throw new BadRequestException("Todo %d não existe!".formatted(id));
+                 throw new BadRequestException("Task {%d} does not exist!".formatted(id));
             }
         );
     }
