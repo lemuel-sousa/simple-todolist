@@ -103,6 +103,13 @@ class SimpleTodolistApplicationTests {
 			.exchange().expectStatus().isOk();
 	}
 
+	@Test
+	void testDeleteTodoFailure(){
+		webTestClient
+			.delete()
+			.uri("/todos/" + 1)
+			.exchange().expectStatus().isBadRequest();
+	}
 	
 
 }
