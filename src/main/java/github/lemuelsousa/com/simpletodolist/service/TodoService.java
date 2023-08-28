@@ -39,7 +39,7 @@ public class TodoService {
     }
 
     public List<TodoDTO> update(Long id, TodoDTO todoDTO){
-        Todo todo = new Todo(todoDTO);
+        var todo = todoMapper.todoEntityToDTO(todoDTO);
         
         todoRepository
             .findById(id).ifPresentOrElse(existingTodo -> {
