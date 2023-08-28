@@ -22,7 +22,7 @@ public class TodoService {
     }
     
     public List<TodoDTO> list(){
-        return todoMapper.toListDto();         
+        return todoMapper.toListDto();
     }
 
     public List<TodoDTO> update(Long id, TodoDTO todoDTO){

@@ -3,6 +3,8 @@ package github.lemuelsousa.com.simpletodolist.Util;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
 
 import github.lemuelsousa.com.simpletodolist.DTO.TodoDTO;
@@ -19,29 +21,25 @@ public class TodoMapper {
         this.todoRepository = todoRepository;
     }
 
-    public TodoDTO toDTO(Todo todo){
-        return new TodoDTO(todo);
-    }
-    
-    public Todo toEntity(TodoDTO todoDTO){
-        return new Todo(todoDTO);
-    }
-
     public void create(TodoDTO todoDTO){
-        todoRepository.save(toEntity(todoDTO));
+        todoRepository.save(new Todo(todoDTO));
     }
 
     public List<TodoDTO> toListDto(){
-        List<Todo> todos = todoRepository.findAll();
+        Sort byPriority = Sort.by(Direction.ASC, "priority")
+            .and(Sort.by(Direction.ASC, "id"));
+        
+        List<Todo> todos = todoRepository.findAll(byPriority);
         return todos.stream()
-            .map(this::toDTO)
+            .map(TodoDTO::new)
             .collect(Collectors.toList());
     }         
     
-
     public void update(Long id, TodoDTO todoDTO){
-        Todo todo = toEntity(todoDTO);
-        todoRepository.findById(id).ifPresentOrElse(existingTodo -> {
+        Todo todo = new Todo(todoDTO);
+        
+        todoRepository
+            .findById(id).ifPresentOrElse(existingTodo -> {
             todo.setId(id);
             todoRepository.save(todo);
         }, () -> {
@@ -50,9 +48,8 @@ public class TodoMapper {
     }
 
     public void delete(Long id){
-
         todoRepository.findById(id).ifPresentOrElse(
-            (existingTodo) -> todoRepository.delete(existingTodo),
+            existingTodo -> todoRepository.delete(existingTodo),
             () -> {
                  throw new BadRequestException("Task {%d} does not exist!".formatted(id));
             }
