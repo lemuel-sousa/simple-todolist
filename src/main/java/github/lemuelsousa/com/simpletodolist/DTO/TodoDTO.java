@@ -6,9 +6,9 @@ import jakarta.validation.constraints.NotBlank;
 public class TodoDTO {
  
     private Long id;
-    @NotBlank
+    @NotBlank(message = "the name field is required.")
     private String name;
-    @NotBlank
+    @NotBlank(message = "the description field is required.")
     private String description;
     private boolean finished;
     private int priority;
