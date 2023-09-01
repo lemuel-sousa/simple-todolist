@@ -1,6 +1,5 @@
 package github.lemuelsousa.com.simpletodolist.entity;
 
-import github.lemuelsousa.com.simpletodolist.DTO.TodoDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,11 +28,12 @@ public class Todo {
         this.priority = priority;
     }
 
-    public Todo(TodoDTO dto) {
-        this.name = dto.getName();
-        this.description = dto.getDescription();
-        this.finished = dto.isFinished();
-        this.priority = dto.getPriority();
+    public Todo(Long id, String name, String description, boolean finished, int priority) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.finished = finished;
+        this.priority = priority;
     }
 
     public Long getId() {
@@ -76,4 +76,36 @@ public class Todo {
         this.priority = priority;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Todo other = (Todo) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Todo [id=" + id + ", name=" + name + ", description=" + description + ", finished=" + finished
+                + ", priority=" + priority + "]";
+    }
+
+    
 }
