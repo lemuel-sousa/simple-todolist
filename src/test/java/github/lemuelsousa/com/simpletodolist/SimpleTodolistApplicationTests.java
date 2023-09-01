@@ -1,5 +1,8 @@
 package github.lemuelsousa.com.simpletodolist;
 
+import static github.lemuelsousa.com.simpletodolist.TestConstants.TODO;
+import static github.lemuelsousa.com.simpletodolist.TestConstants.TODOS;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,8 +11,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import github.lemuelsousa.com.simpletodolist.DTO.TodoDTO;
-import github.lemuelsousa.com.simpletodolist.repository.TodoRepository;
+import github.lemuelsousa.com.simpletodolist.dto.RequestTodoDto;
+import github.lemuelsousa.com.simpletodolist.entity.Todo;
 
 @SpringBootTest( webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -19,33 +22,30 @@ class SimpleTodolistApplicationTests {
 	@Autowired
 	private WebTestClient webTestClient;
 
-	@Autowired
-	private TodoRepository todoRepository;	
-
 	@Test
-	void testCreateTodoSuccess() {
-		var todo = new TodoDTO("Teste 1", "test description", false, 0);
+	void testCreateTodoSuccessfully() {
+		var todo = new Todo(1L, "Teste 1", "test description", false, 0);
 
 		webTestClient
 				.post()
 				.uri("/todos")
 				.bodyValue(todo)
 				.exchange()
-				.expectStatus().isCreated()
+				.expectStatus().isOk()
 				.expectBody()
 				.jsonPath("$").isArray()
 				.jsonPath("$.length()").isEqualTo(1)
+				.jsonPath("$[0].id").isEqualTo(todo.getId())
 				.jsonPath("$[0].name").isEqualTo(todo.getName())
 				.jsonPath("$[0].description").isEqualTo(todo.getDescription())
 				.jsonPath("$[0].finished").isEqualTo(todo.isFinished())
 				.jsonPath("$[0].priority").isEqualTo(todo.getPriority());
 	}
 
-
 	@Test
-	void testCreateTodoFailure() {
+	void testCreateTodoFailed() {
 		
-		var invalidTodo = new TodoDTO("", "", false, 1);
+		var invalidTodo = new RequestTodoDto("", "", false, 1);
 
 		webTestClient
 			.post()
@@ -58,32 +58,27 @@ class SimpleTodolistApplicationTests {
 	@Test
 	@Sql("/import.sql")
 	void testUpdateTodoSuccess(){
-
-		var todo = todoRepository.findAll().get(0);
-		
-		var todoUp = new TodoDTO(todo.getId(), todo.getName() + " Up", todo.getDescription() + " Up", !todo.isFinished(), todo.getPriority() + 1); 
-
-		webTestClient
-			.put()
-			.uri("/todos/" + todoUp.getId())
-			.bodyValue(todoUp)
-			.exchange()
-			.expectStatus().isOk()
-			.expectBody()
-			.jsonPath("$").isArray()
-			.jsonPath("$[0].length()").isEqualTo(5)
-			.jsonPath("$[0].name").isEqualTo(todoUp.getName())
-			.jsonPath("$[0].description").isEqualTo(todoUp.getDescription())
-			.jsonPath("$[0].finished").isEqualTo(todoUp.isFinished())
-			.jsonPath("$[0].priority").isEqualTo(todoUp.getPriority());
+			var todoUp = new Todo(TODO.getId(), TODO.getName() + " Up", TODO.getDescription() + " Up", !TODO.isFinished(), TODO.getPriority() + 1);
+			webTestClient
+				.put()
+				.uri("/todos/" + TODO.getId())
+				.bodyValue(todoUp)
+				.exchange()
+				.expectStatus().isOk()
+				.expectBody()
+				.jsonPath("$").isArray()
+				.jsonPath("$[0].length()").isEqualTo(5)
+				.jsonPath("$[0].name").isEqualTo(todoUp.getName())
+				.jsonPath("$[0].description").isEqualTo(todoUp.getDescription())
+				.jsonPath("$[0].finished").isEqualTo(todoUp.isFinished())
+				.jsonPath("$[0].priority").isEqualTo(todoUp.getPriority());
 	}
 
 	@Test
-	void testUpdateTodoFailure(){
-		
+	void testUpdateTodoFailedByNonExistentId(){
 		var nonExistentId = 1L;
 
-		var invalidTodo = new TodoDTO(nonExistentId, "", "", false, 1);
+		var invalidTodo = new Todo(nonExistentId, "test", "test desc", false, 1);
 
 		webTestClient
 			.put()
@@ -92,24 +87,57 @@ class SimpleTodolistApplicationTests {
 			.exchange()
 			.expectStatus().isBadRequest();
 	}
-	
+
 	@Test
 	@Sql("/import.sql")
-	void testDeleteTodoSuccess(){
-		
+	void testUpdateTodoFailedByFieldsValidation(){
+		var invalidTodo = new Todo(999L, "", "", false, 1);
+
 		webTestClient
-			.delete()
+			.put()
 			.uri("/todos/" + 1)
-			.exchange().expectStatus().isOk();
+			.bodyValue(invalidTodo)
+			.exchange()
+			.expectStatus().isBadRequest();
+	}
+	
+	@Test
+	@Sql("/remove.sql")
+	@Sql("/import.sql")
+	void testDeleteTodoSuccess(){
+			webTestClient
+			.delete()
+			.uri("/todos/" + 999L)
+			.exchange().expectStatus().isOk()
+			.expectBody()
+			.jsonPath("$").isArray()
+			.jsonPath("$.length()").isEqualTo(3);
+
 	}
 
 	@Test
 	void testDeleteTodoFailure(){
 		webTestClient
 			.delete()
-			.uri("/todos/" + 1)
+			.uri("/todos/" + 1L)
 			.exchange().expectStatus().isBadRequest();
 	}
 	
-
+	@Test
+	@Sql("/remove.sql")
+	@Sql("/import.sql")
+	void testGetTodos() throws Exception{
+		webTestClient
+			.get()
+			.uri("/todos")
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody()
+			.jsonPath("$").isArray()
+			.jsonPath("$.length()").isEqualTo(4)
+			.jsonPath("$[0]").isEqualTo(TODOS.get(0))
+			.jsonPath("$[1]").isEqualTo(TODOS.get(1))
+			.jsonPath("$[2]").isEqualTo(TODOS.get(2))
+			.jsonPath("$[3]").isEqualTo(TODOS.get(3));
+	}
 }
