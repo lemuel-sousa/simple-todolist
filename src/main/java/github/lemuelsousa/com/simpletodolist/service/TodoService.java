@@ -7,15 +7,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import github.lemuelsousa.com.simpletodolist.DTO.TodoDTO;
 import github.lemuelsousa.com.simpletodolist.Util.TodoMapper;
-import github.lemuelsousa.com.simpletodolist.entity.Todo;
+import github.lemuelsousa.com.simpletodolist.dto.RequestTodoDto;
+import github.lemuelsousa.com.simpletodolist.dto.ResponseTodoDto;
 import github.lemuelsousa.com.simpletodolist.exceptions.BadRequestException;
 import github.lemuelsousa.com.simpletodolist.repository.TodoRepository;
 
 @Service
 public class TodoService {
-    
+
     @Autowired
     private TodoMapper todoMapper;
 
@@ -24,23 +24,23 @@ public class TodoService {
         this.todoRepository = todoRepository;
     }
 
-    public List<TodoDTO> create(TodoDTO todoDTO){
-        todoRepository.save(todoMapper.todoEntityToDTO(todoDTO));
+    public List<ResponseTodoDto> create(RequestTodoDto requestTodo){
+        todoRepository.save(todoMapper.toEntity(requestTodo));
         return list();
     }
     
-    public List<TodoDTO> list(){
+    public List<ResponseTodoDto> list(){
         Sort byPriority = Sort.by(Direction.ASC, "priority")
-            .and(Sort.by(Direction.ASC, "id"));
+        .and(Sort.by(Direction.ASC, "id"));
         
-        List<Todo> todos = todoRepository.findAll(byPriority);
-        
-        return todoMapper.todoListEntityToDTO(todos);
+        var todos = todoRepository.findAll(byPriority);
+
+        return todoMapper.toListOfResponseTodo(todos);
     }
 
-    public List<TodoDTO> update(Long id, TodoDTO todoDTO){
-        var todo = todoMapper.todoEntityToDTO(todoDTO);
-        
+    public List<ResponseTodoDto> update(Long id, RequestTodoDto requestTodo){
+        var todo = todoMapper.toEntity(requestTodo);
+
         todoRepository
             .findById(id).ifPresentOrElse(existingTodo -> {
                 todo.setId(id);
@@ -48,18 +48,16 @@ public class TodoService {
         }, () -> {
             throw new BadRequestException("Task {%d} does not exist!".formatted(id));
         });
-    
         return list();
     }
 
-    public List<TodoDTO> delete(Long id){
+    public List<ResponseTodoDto> delete(Long id){
         todoRepository.findById(id).ifPresentOrElse(
             existingTodo -> todoRepository.delete(existingTodo),
             () -> {
                  throw new BadRequestException("Task {%d} does not exist!".formatted(id));
             }
         );
-
         return list();
     }
 

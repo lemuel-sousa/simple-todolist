@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import github.lemuelsousa.com.simpletodolist.DTO.TodoDTO;
+import github.lemuelsousa.com.simpletodolist.dto.RequestTodoDto;
+import github.lemuelsousa.com.simpletodolist.dto.ResponseTodoDto;
 import github.lemuelsousa.com.simpletodolist.service.TodoService;
 import jakarta.validation.Valid;
 
@@ -21,28 +22,27 @@ import jakarta.validation.Valid;
 public class TodoController {
 
     private TodoService todoService;
-
     public TodoController(TodoService todoService) {
         this.todoService = todoService;
     }
 
     @PostMapping
-    public ResponseEntity<List<TodoDTO>> create(@RequestBody @Valid TodoDTO todo){
-        return ResponseEntity.ok().body(todoService.create(todo));
+    public ResponseEntity<List<ResponseTodoDto>> create(@RequestBody @Valid RequestTodoDto requestTodo){
+        return ResponseEntity.ok().body(todoService.create(requestTodo));
     }
     
     @GetMapping
-    public ResponseEntity<List<TodoDTO>> getAll(){
+    public ResponseEntity<List<ResponseTodoDto>> getAll(){
         return ResponseEntity.ok().body(todoService.list());
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<List<TodoDTO>> update(@PathVariable Long id, @RequestBody @Valid TodoDTO todo){
-        return ResponseEntity.ok().body(todoService.update(id, todo));
+    public ResponseEntity<List<ResponseTodoDto>> update(@PathVariable Long id, @RequestBody @Valid RequestTodoDto requestTodo){
+        return ResponseEntity.ok().body(todoService.update(id, requestTodo));
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<List<TodoDTO>> delete(@PathVariable("id") Long id){
+    public ResponseEntity<List<ResponseTodoDto>> delete(@PathVariable("id") Long id){
         return ResponseEntity.ok().body(todoService.delete(id));
     }
 }
