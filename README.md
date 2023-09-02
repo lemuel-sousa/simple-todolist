@@ -24,23 +24,27 @@
 
 ## Como Executar
 
-A aplicação pode ser executada em um [container Docker](https://docs.docker.com/get-started/) ou construída pelo [Gradle](https://docs.gradle.org/current/userguide/userguide.html) e executada tradicionalmente.
+A aplicação pode ser executada em um [container Docker](https://docs.docker.com/get-started/) (requer [docker e compose](https://docs.docker.com/compose/) instalados) ou construída pelo [Gradle](https://docs.gradle.org/current/userguide/userguide.html) e executada tradicionalmente.
 
 - Clonar repositório git
 
-
-<strong>Método 1: subir o container</strong>
-
+### Método 1: via docker-compose
+* constrói o conteiner
+```
+$ docker-compose build
+```
+* executa o conteiner
 ```
 $ docker-compose up
 ```
-- Para derrubar o container
+* encerra o conteiner
 ```
 $ docker-compose down
 ```
-<strong>Método 2: Construir o projeto</strong>
+### Método 2: Construir o projeto via gradle
+* Limpa e cria um novo executável
 ```
-$ ./gradlew bootjar
+$ ./gradlew clean bootjar
 ```
 - Executar a aplicação:
 ```
