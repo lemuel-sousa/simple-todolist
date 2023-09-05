@@ -7,10 +7,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import github.lemuelsousa.com.simpletodolist.Util.TodoMapper;
 import github.lemuelsousa.com.simpletodolist.dto.RequestTodoDto;
 import github.lemuelsousa.com.simpletodolist.dto.ResponseTodoDto;
-import github.lemuelsousa.com.simpletodolist.exceptions.BadRequestException;
+import github.lemuelsousa.com.simpletodolist.exceptions.TodoNotFoundException;
+import github.lemuelsousa.com.simpletodolist.mapper.TodoMapper;
 import github.lemuelsousa.com.simpletodolist.repository.TodoRepository;
 
 @Service
@@ -46,7 +46,7 @@ public class TodoService {
                 todo.setId(id);
                 todoRepository.save(todo);
         }, () -> {
-            throw new BadRequestException("Task {%d} does not exist!".formatted(id));
+            throw new TodoNotFoundException(id);
         });
         return list();
     }
@@ -55,7 +55,7 @@ public class TodoService {
         todoRepository.findById(id).ifPresentOrElse(
             existingTodo -> todoRepository.delete(existingTodo),
             () -> {
-                 throw new BadRequestException("Task {%d} does not exist!".formatted(id));
+                throw new TodoNotFoundException(id);
             }
         );
         return list();
