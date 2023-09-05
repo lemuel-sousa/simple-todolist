@@ -68,6 +68,7 @@ class SimpleTodolistApplicationTests {
 				.expectBody()
 				.jsonPath("$").isArray()
 				.jsonPath("$[0].length()").isEqualTo(5)
+				.jsonPath("$[0].id").isEqualTo(todoUp.getId())
 				.jsonPath("$[0].name").isEqualTo(todoUp.getName())
 				.jsonPath("$[0].description").isEqualTo(todoUp.getDescription())
 				.jsonPath("$[0].finished").isEqualTo(todoUp.isFinished())
@@ -78,24 +79,25 @@ class SimpleTodolistApplicationTests {
 	void testUpdateTodoFailedByNonExistentId(){
 		var nonExistentId = 1L;
 
-		var invalidTodo = new Todo(nonExistentId, "test", "test desc", false, 1);
+		var invalidTodo = new Todo("test", "test desc", false, 1);
 
 		webTestClient
 			.put()
 			.uri("/todos/" + nonExistentId)
 			.bodyValue(invalidTodo)
 			.exchange()
-			.expectStatus().isBadRequest();
+			.expectStatus().isNotFound();
 	}
 
 	@Test
 	@Sql("/import.sql")
 	void testUpdateTodoFailedByFieldsValidation(){
+
 		var invalidTodo = new Todo(999L, "", "", false, 1);
 
 		webTestClient
 			.put()
-			.uri("/todos/" + 1)
+			.uri("/todos/" + invalidTodo.getId())
 			.bodyValue(invalidTodo)
 			.exchange()
 			.expectStatus().isBadRequest();
@@ -120,7 +122,7 @@ class SimpleTodolistApplicationTests {
 		webTestClient
 			.delete()
 			.uri("/todos/" + 1L)
-			.exchange().expectStatus().isBadRequest();
+			.exchange().expectStatus().isNotFound();
 	}
 	
 	@Test
